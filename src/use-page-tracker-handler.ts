@@ -10,6 +10,8 @@ export type HistoryCustomState = {
 
 export const usePageTrackerHandler = () => {
   const pageIndex = useRef(0);
+  // for isLastPage usage
+  const visitedTotalLength = useRef(0);
 
   useEffect(() => {
     initHistoryState();
@@ -29,6 +31,7 @@ export const usePageTrackerHandler = () => {
       pageTrackerStore.setState({
         pageIndex: pageIndex.current,
         isFirstPage: pageIndex.current === 0,
+        isLastPage: pageIndex.current === visitedTotalLength.current,
         referrer: state.__REACT_PAGE_TRACKER_INTERNAL__.referrer,
         pageHistory: [...state.__REACT_PAGE_TRACKER_INTERNAL__.pageHistory],
         pageEvent,
@@ -44,6 +47,7 @@ export const usePageTrackerHandler = () => {
     history.pushState = (state: unknown, title: string, url: string) => {
       const newPageIndex = (history.state.__REACT_PAGE_TRACKER_INTERNAL__?.pageIndex ?? 0) + 1;
       pageIndex.current = newPageIndex;
+      visitedTotalLength.current = newPageIndex;
       const newPageHistory = pageTrackerStore.getImmutablePageHistory();
       newPageHistory.push(url);
       const newState = {
@@ -61,6 +65,7 @@ export const usePageTrackerHandler = () => {
       pageTrackerStore.setState({
         ...newState,
         isFirstPage: false,
+        isLastPage: true,
         pageEvent: 'push',
       });
 

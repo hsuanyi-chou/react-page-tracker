@@ -6,6 +6,7 @@ const INITIAL_STATE: PageTrackerState = {
   referrer: '',
   pageEvent: undefined,
   isFirstPage: true,
+  isLastPage: true,
   pageHistory: [],
 };
 
