@@ -5,7 +5,7 @@ import { pageTrackerStore } from './page-tracker-store';
 
 const DEBUG = false;
 export type HistoryCustomState = {
-  __REACT_PAGE_TRACKER_INTERNAL__: Pick<PageTrackerState, 'pageIndex' | 'referrer'>;
+  __REACT_PAGE_TRACKER_INTERNAL__: Pick<PageTrackerState, 'pageIndex' | 'referrer' | 'pageHistory'>;
 };
 
 export const usePageTrackerHandler = () => {
@@ -30,6 +30,7 @@ export const usePageTrackerHandler = () => {
         pageIndex: pageIndex.current,
         isFirstPage: pageIndex.current === 0,
         referrer: state.__REACT_PAGE_TRACKER_INTERNAL__.referrer,
+        pageHistory: [...state.__REACT_PAGE_TRACKER_INTERNAL__.pageHistory],
         pageEvent,
       });
     };
@@ -40,12 +41,15 @@ export const usePageTrackerHandler = () => {
 
     // override popState, pushState
     window.onpopstate = handlePopState;
-    history.pushState = (state: unknown, title: string, url?: string) => {
+    history.pushState = (state: unknown, title: string, url: string) => {
       const newPageIndex = (history.state.__REACT_PAGE_TRACKER_INTERNAL__?.pageIndex ?? 0) + 1;
       pageIndex.current = newPageIndex;
+      const newPageHistory = pageTrackerStore.getImmutablePageHistory();
+      newPageHistory.push(url);
       const newState = {
         pageIndex: newPageIndex,
         referrer: window.location.href,
+        pageHistory: newPageHistory,
       };
 
       const stateWithPageInfo: HistoryCustomState = {
@@ -85,8 +89,10 @@ const initHistoryState = () => {
     __REACT_PAGE_TRACKER_INTERNAL__: {
       pageIndex: 0,
       referrer: document.referrer,
-    },
+      pageHistory: [window.location.pathname],
+    } as Partial<PageTrackerState>,
   };
+
   if (typeof history.state === 'object' && history.state !== null) {
     history.replaceState(
       {

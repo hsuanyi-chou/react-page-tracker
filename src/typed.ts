@@ -1,8 +1,10 @@
+export type PageEvent = 'forward' | 'back' | 'push' | undefined;
+
 export type PageTrackerState = {
   pageIndex: number;
   referrer: string;
   isFirstPage?: boolean;
-  pageEvent: 'forward' | 'back' | 'push' | undefined;
+  pageEvent: PageEvent;
   pageHistory: string[];
 };
 

@@ -20,6 +20,10 @@ export const pageTrackerStore = {
     return this.state as PageTrackerState;
   },
 
+  getImmutablePageHistory(): PageTrackerState['pageHistory'] {
+    return this.state.pageHistory.slice();
+  },
+
   // 更新狀態並通知所有訂閱者
   setState: (newState: Partial<PageTrackerState>) => {
     pageTrackerStore.state = {
