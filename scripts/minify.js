@@ -12,13 +12,13 @@ const compressFiles = (dir) => {
     if (stats.isDirectory()) {
       compressFiles(fullPath); // 遞迴處理子目錄
     } else if (file.endsWith('.js')) {
-      const minifiedPath = fullPath.replace(/\.js$/, '.min.js');
-      console.log(`Compressing ${fullPath} -> ${minifiedPath}`);
+      console.log(`Compressing ${fullPath}`);
       esbuild
         .build({
           entryPoints: [fullPath],
-          outfile: minifiedPath,
+          outfile: fullPath, // 壓縮後覆蓋原檔案
           minify: true,
+          allowOverwrite: true,
         })
         .catch((err) => console.error(`Error compressing ${fullPath}:`, err));
     }

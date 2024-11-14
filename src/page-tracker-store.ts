@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { PageTrackerState, Selector } from './typed';
+import { PageTrackerState } from './typed';
 
 const INITIAL_STATE: PageTrackerState = {
   pageIndex: 0,
@@ -18,7 +18,7 @@ export const pageTrackerStore = {
 
   // 獲取當前狀態
   getState(): PageTrackerState {
-    return this.state as PageTrackerState;
+    return this.state;
   },
 
   getImmutablePageHistory(): PageTrackerState['pageHistory'] {
@@ -43,13 +43,13 @@ export const pageTrackerStore = {
   },
 };
 
-export const usePageTrackerStore = <T>(selector: Selector): T => {
+export const usePageTrackerStore = <T>(selector: (state: PageTrackerState) => T): T => {
   let lastSelected: T;
 
   return useSyncExternalStore(
     pageTrackerStore.subscribe,
     () => {
-      const selected: T = selector(pageTrackerStore.getState());
+      const selected = selector(pageTrackerStore.getState());
 
       // 僅當選擇的值發生改變時才更新
       if (JSON.stringify(lastSelected) !== JSON.stringify(selected)) {
