@@ -1,0 +1,11 @@
+# ignore all files
+*
+
+# except dist/
+!dist/
+!dist/**/*
+
+# required npm documents
+!package.json
+!README.md
+!LICENSE

@@ -1,0 +1,41 @@
+name: Publish to NPM
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create Git Tag
+        id: create_tag
+        run: |
+           VERSION=$(node -p "require('./package.json').version")
+           echo "Current version: $VERSION"
+           git config user.name "github-actions"
+           git config user.email "github-actions@github.com"
+           git tag "v$VERSION"
+           git push origin "v$VERSION"
+
+      - name: Build project
+        run: npm run build
+
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
