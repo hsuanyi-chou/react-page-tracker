@@ -1,19 +1,18 @@
 'use client';
 import { useEffect, useRef } from 'react';
 import { PageTrackerState } from './typed';
-import { PageTrackerProps } from './page-tracker';
 import { pageTrackerStore } from './page-tracker-store';
 
 const DEBUG = false;
 export type HistoryCustomState = {
-  __REACT_PAGE_TRACKER_INTERNAL__: Pick<PageTrackerState, 'pageIndex' | 'referrer' | 'data'>;
+  __REACT_PAGE_TRACKER_INTERNAL__: Pick<PageTrackerState, 'pageIndex' | 'referrer'>;
 };
 
-export const usePageTrackerHandler = ({ initialData }: Pick<PageTrackerProps, 'initialData'>) => {
+export const usePageTrackerHandler = () => {
   const pageIndex = useRef(0);
 
   useEffect(() => {
-    initHistoryState(initialData);
+    initHistoryState();
 
     /**
      * 處理 user 操作原生上、下一頁或頁面上自行加入的返回鍵時
@@ -29,7 +28,6 @@ export const usePageTrackerHandler = ({ initialData }: Pick<PageTrackerProps, 'i
       }
       pageTrackerStore.setState({
         pageIndex: pageIndex.current,
-        data: state.__REACT_PAGE_TRACKER_INTERNAL__.data,
         isFirstPage: pageIndex.current === 0,
         referrer: state.__REACT_PAGE_TRACKER_INTERNAL__.referrer,
         pageEvent,
@@ -48,7 +46,6 @@ export const usePageTrackerHandler = ({ initialData }: Pick<PageTrackerProps, 'i
       const newState = {
         pageIndex: newPageIndex,
         referrer: window.location.href,
-        data: undefined,
       };
 
       const stateWithPageInfo: HistoryCustomState = {
@@ -83,12 +80,11 @@ const debugLog = (message: string) => {
   }
 };
 
-const initHistoryState = (initialData: Record<string, unknown> | undefined) => {
+const initHistoryState = () => {
   const defaultData = {
     __REACT_PAGE_TRACKER_INTERNAL__: {
       pageIndex: 0,
       referrer: document.referrer,
-      data: initialData,
     },
   };
   if (typeof history.state === 'object' && history.state !== null) {

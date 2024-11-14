@@ -1,11 +1,9 @@
-export type PageTrackerState<UDATA extends Record<string, unknown> | undefined = undefined> = {
+export type PageTrackerState = {
   pageIndex: number;
   referrer: string;
   isFirstPage?: boolean;
   pageEvent: 'forward' | 'back' | 'push' | undefined;
-  data?: UDATA;
+  pageHistory: string[];
 };
 
-export type PartialPageTrackerState<UDATA extends Record<string, unknown> | undefined> = Partial<
-  PageTrackerState<UDATA>
->;
+export type Selector = <T>(state: PageTrackerState) => T;

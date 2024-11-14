@@ -1,12 +1,12 @@
 import { useSyncExternalStore } from 'react';
-import { PageTrackerState, PartialPageTrackerState } from './typed';
+import { PageTrackerState, Selector } from './typed';
 
-const INITIAL_STATE: PageTrackerState<Record<string, unknown>> = {
+const INITIAL_STATE: PageTrackerState = {
   pageIndex: 0,
   referrer: '',
   pageEvent: undefined,
   isFirstPage: true,
-  data: {},
+  pageHistory: [],
 };
 
 export const pageTrackerStore = {
@@ -16,14 +16,12 @@ export const pageTrackerStore = {
   listeners: new Set<() => void>(),
 
   // 獲取當前狀態
-  getState<UDATA extends Record<string, unknown> | undefined>(): PageTrackerState<UDATA> {
-    return this.state as PageTrackerState<UDATA>;
+  getState(): PageTrackerState {
+    return this.state as PageTrackerState;
   },
 
   // 更新狀態並通知所有訂閱者
-  setState: <UDATA extends Record<string, unknown> | undefined>(
-    newState: PartialPageTrackerState<UDATA>,
-  ) => {
+  setState: (newState: Partial<PageTrackerState>) => {
     pageTrackerStore.state = {
       ...pageTrackerStore.state,
       ...newState,
@@ -40,15 +38,13 @@ export const pageTrackerStore = {
   },
 };
 
-export const usePageTrackerStore = <UDATA extends Record<string, unknown> | undefined, T = UDATA>(
-  selector: (state: PageTrackerState<UDATA>) => T,
-): T => {
+export const usePageTrackerStore = <T>(selector: Selector): T => {
   let lastSelected: T;
 
   return useSyncExternalStore(
     pageTrackerStore.subscribe,
     () => {
-      const selected = selector(pageTrackerStore.getState<UDATA>());
+      const selected: T = selector(pageTrackerStore.getState());
 
       // 僅當選擇的值發生改變時才更新
       if (JSON.stringify(lastSelected) !== JSON.stringify(selected)) {

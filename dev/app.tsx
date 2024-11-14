@@ -4,7 +4,7 @@ import { RouterProvider } from '@tanstack/react-router';
 
 export default function App() {
   return (
-    <PageTracker initialData={{ myVar: 1 }}>
+    <PageTracker>
       <RouterProvider router={router} />
     </PageTracker>
   );
