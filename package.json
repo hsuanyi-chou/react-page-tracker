@@ -1,6 +1,6 @@
 {
   "name": "react-page-tracker",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "description": "A lightweight, zero-dependency library providing accurate navigation tracking, fixed document.referrer value, and complete history support for React frameworks.",
   "scripts": {
     "dev": "vite",
@@ -36,11 +36,10 @@
     "type": "git",
     "url": "git+https://github.com/hsuanyi-chou/react-page-tracker.git"
   },
-  "dependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
-  },
+  
   "devDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
     "@tanstack/router-devtools": "^1.81.4",
     "@tanstack/router-plugin": "^1.79.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -67,7 +66,7 @@
     "vite-plugin-dts": "^4.3.0"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   }
 }

@@ -18,7 +18,7 @@ export const pageTrackerStore = {
   } as PageTrackerState,
   listeners: new Set<() => void>(),
 
-  // 獲取當前狀態
+  // Get current state
   getState(): PageTrackerState {
     return this.state;
   },
@@ -27,21 +27,22 @@ export const pageTrackerStore = {
     return this.state.pageHistory.slice();
   },
 
-  // 更新狀態並通知所有訂閱者
+  // Update state and notify all subscribers
   setState: (newState: Partial<PageTrackerState>) => {
     pageTrackerStore.state = {
       ...pageTrackerStore.state,
       ...newState,
     } as PageTrackerState;
+    // Notify subscribers on the next animation frame for smoother updates
     requestAnimationFrame(() => {
       pageTrackerStore.listeners.forEach((listener) => listener());
     });
   },
 
-  // 訂閱狀態變化
+  // Subscribe to state changes
   subscribe: (listener: () => void) => {
     pageTrackerStore.listeners.add(listener);
-    return () => pageTrackerStore.listeners.delete(listener); // 返回取消訂閱的函數
+    return () => pageTrackerStore.listeners.delete(listener); // Return an unsubscribe function
   },
 };
 
@@ -60,7 +61,7 @@ export const usePageTrackerStore = <T>(selector: (state: PageTrackerState) => T)
     () => {
       const selected = selector(pageTrackerStore.getState());
 
-      // 僅當選擇的值發生改變時才更新
+      // Update only when the selected value changes
       if (JSON.stringify(lastSelected) !== JSON.stringify(selected)) {
         lastSelected = selected;
       }

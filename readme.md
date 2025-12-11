@@ -22,6 +22,7 @@
 - 💡 Accurately determines whether the current page is the first or last page.
 - 🧭 Offers a complete history browsing record.
 - 🚀 Supports Next.js, Remix, TanStack Query, and React Router.
+- 📦 Compatible with React 18 and React 19.
 - ⚡️ zero deps.
 - ⭐️ typed-safe.
 
